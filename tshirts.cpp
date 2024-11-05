@@ -1,22 +1,29 @@
 #include <iostream>
-#include <assert.h>
+#include <cassert>
+#include <string>
+using namespace std;
 
-char size(int cms) {
-    char sizeName = '\0';
-    if(cms < 38) {
-        sizeName = 'S';
-    } else if(cms > 38 && cms < 42) {
-        sizeName = 'M';
-    } else if(cms > 42) {
-        sizeName = 'L';
+// Function to determine the size based on cms
+string size(int cms) {
+    if (cms < 38) {
+        return "S";
+    } else if (cms >= 38 && cms < 42) { // Adjusted to include 38 in "M"
+        return "M";
+    } else {
+        return "L";
     }
-    return sizeName;
 }
 
 int main() {
-    assert(size(37) == 'S');
-    assert(size(40) == 'M');
-    assert(size(43) == 'L');
-    std::cout << "All is well (maybe!)\n";
+    // Assert statements for size function
+    assert(size(37) == "S");
+    assert(size(38) == "M");
+    assert(size(40) == "M");
+    assert(size(42) == "M"); // Added test for 42 to ensure it's "M"
+    assert(size(43) == "L");
+
+    // Print confirmation message
+    cout << "All is well (maybe!)" << endl;
+
     return 0;
 }
