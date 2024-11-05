@@ -1,32 +1,52 @@
 #include <iostream>
-#include <assert.h>
+using namespace std;
 
-int alertFailureCount = 0;
+class Alerter {
+public:
+    static int alertFailureCount; // Static variable to count alert failures
 
-int networkAlertStub(float celcius) {
-    std::cout << "ALERT: Temperature is " << celcius << " celcius.\n";
-    // Return 200 for ok
-    // Return 500 for not-ok
-    // stub always succeeds and returns 200
-    return 200;
-}
+    // Flag to simulate network failure
+    static bool simulateNetworkFailure;
 
-void alertInCelcius(float farenheit) {
-    float celcius = (farenheit - 32) * 5 / 9;
-    int returnCode = networkAlertStub(celcius);
-    if (returnCode != 200) {
-        // non-ok response is not an error! Issues happen in life!
-        // let us keep a count of failures to report
-        // However, this code doesn't count failures!
-        // Add a test below to catch this bug. Alter the stub above, if needed.
-        alertFailureCount += 0;
+    static int networkAlertStub(float celcius) {
+        cout << "ALERT: Temperature is " << celcius << " celcius" << endl;
+        // Simulate a failure based on the flag
+        return simulateNetworkFailure ? 500 : 200;
     }
-}
+
+    static void alertInCelcius(float farenheit) {
+        float celcius = (farenheit - 32) * 5 / 9;
+        int returnCode = networkAlertStub(celcius);
+        if (returnCode != 200) {
+            // Count the failure correctly
+            alertFailureCount += 1;  // Increment failure count on non-ok response
+        }
+    }
+};
+
+// Initialize static variables
+int Alerter::alertFailureCount = 0;
+bool Alerter::simulateNetworkFailure = false;
 
 int main() {
-    alertInCelcius(400.5);
-    alertInCelcius(303.6);
-    std::cout << alertFailureCount << " alerts failed.\n";
-    std::cout << "All is well (maybe!)\n";
+    // Test case: Initially, we simulate a successful network call
+    Alerter::alertInCelcius(400.5f);
+    Alerter::alertInCelcius(303.6f);
+
+    // Show count of failed alerts before simulating a failure
+    cout << Alerter::alertFailureCount << " alerts failed." << endl;
+
+    // Simulate network failure
+    Alerter::simulateNetworkFailure = true;
+
+    // Test case: Now, with simulated network failure
+    Alerter::alertInCelcius(400.5f);
+    Alerter::alertInCelcius(303.6f);
+
+    // Show count of failed alerts after simulating failure
+    cout << Alerter::alertFailureCount << " alerts failed after simulation." << endl;
+
+    cout << "All is well (maybe!)" << endl;
+
     return 0;
 }
